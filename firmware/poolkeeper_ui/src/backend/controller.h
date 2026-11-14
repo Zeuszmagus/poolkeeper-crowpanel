@@ -13,6 +13,10 @@ void controller_set_mode(ChannelId id, Mode m);
 bool controller_save_program(ChannelId id, const Program &p);
 void controller_save_salt(const SaltConfig &c);
 
+// Kimenet: Modbus relémodul (true) vagy szimuláció (false)
+void controller_use_modbus(bool on);
+bool controller_use_modbus();
+
 // Szimuláció / diagnosztika
 void controller_sim_module(bool ok);
 void controller_sim_flow_fault(bool fault);

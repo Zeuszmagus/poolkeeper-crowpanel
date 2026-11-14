@@ -92,6 +92,46 @@ A repó nyilvánossága: a release-fájlokat a panel bejelentkezés nélkül tö
 - ✅ A GitHub-repó (`Zeuszmagus/poolkeeper-crowpanel`, nyilvános) és a GitHub Actions felhős fordítás működik, egy kiadás kb. 4 perc.
 - ⚠️ Az ESP32 core 3.3.8 a HTTPS-átirányítás után elveszíti a tanúsítványcsomagot. Ezért a firmware az átirányításokat maga követi, minden lépésben új klienssel ([net/ota.cpp](firmware/poolkeeper_ui/src/net/ota.cpp)). A v0.4.0 és a v0.4.1 kiadás emiatt nem tud frissíteni, ezeket ne telepítsd.
 
+## Kimeneti relémodul (firmware 0.5.0, build 8)
+
+**Modul:** Waveshare Modbus RTU Relay 4CH (RS485, 9600 8N1, 1-es cím). **Tápja:** 7–36 V DC, külön tápegységről.
+
+**Bekötés:** a panel 4 tűs UART-csatlakozója (J34, ZX-MX 1.25 mm) → automatikus irányváltós TTL–RS485 átalakító → a modul A/B kapcsa.
+
+| J34 tű | Jel | Átalakító |
+|---|---|---|
+| 1 | RX (GPIO44, 5 V-os szintre illesztve) | TXD |
+| 2 | TX (GPIO43) | RXD |
+| 3 | 5 V (GPIO2 kapcsolja, a firmware bekapcsolja) | VCC |
+| 4 | GND | GND |
+
+Az átalakító A+ kapcsát a modul A kapcsára, a B− kapcsát a modul B kapcsára kell kötni. Hosszabb kábelnél a busz végére 120 Ω-os lezáróellenállás kell.
+
+**Relékiosztás** (`PK_RELAY_OF`, [app_config.h](firmware/poolkeeper_ui/src/app_config.h)):
+
+| Relé | Eszköz |
+|---|---|
+| 1 | Szivattyú |
+| 2 | Sóbontó |
+| 3 | Világítás |
+| 4 | Masszázs |
+
+A relé nélküli eszközök (Nyakzuhany, Ellenáramoltató, Levegőmasszázs) rejtve vannak.
+
+**Működés:**
+- Induláskor minden relé kikapcsol.
+- A firmware 250 ms-onként visszaolvassa a relék állapotát (FC 01), és eltérés esetén kiírja a kívánt állapotot (FC 0F).
+- A kijelző mindig a visszaolvasott állapotot mutatja.
+- Ha a modul 5 másodpercig nem válaszol, a kezdőképernyőn megjelenik „A kimeneti modul nem válaszol” üzenet, és a bekapcsolt vagy bekapcsolandó eszközök HIBA állapotba kerülnek.
+
+**Keringés:** áramlásérzékelő nincs. A keringés akkor számít igazoltnak, ha a szivattyúrelé visszaolvasva legalább 30 másodperce be van kapcsolva (`PK_FLOW_CONFIRM_MS`). A sóbontó csak igazolt keringés mellett kapcsol be.
+
+**Konzol:**
+- `relay`: kapcsolat, relé-állapot, hibaszámláló és a modul szoftververziója;
+- `out sim` / `out modbus`: váltás a szimuláció és a relémodul között.
+
+**230 V:** a szivattyúmotort mágneskapcsolón keresztül, villanyszerelővel kell bekötni.
+
 ### Döntésre vár (Zsolti)
 
 1. Hány másodperc tétlenség után térjen vissza a panel az órához? (Most 60 s, szerkesztőben 180 s.)

@@ -7,6 +7,7 @@
 #include <time.h>
 
 #include "../backend/controller.h"
+#include "../backend/relay_modbus.h"
 #include "../hal/board.h"
 #include "../model/model.h"
 #include "../model/storage.h"
@@ -26,7 +27,8 @@ void help() {
       "  tap X Y              koppintás\n"
       "  swipe X0 Y0 X1 Y1    húzás (vízszintes: lapozás, függőleges: érték)\n"
       "  time YYYY-MM-DD HH:MM  helyi idő | clock 0  óra érvénytelenítése\n"
-      "  module 0|1           kimeneti modul elérhető\n"
+      "  out modbus|sim       kimenet: relémodul / szimuláció | relay  relémodul állapota\n"
+      "  module 0|1           kimeneti modul elérhető (csak szimulációban)\n"
       "  flow 0|1             keringés-visszajelzés hiba (0 = hiba)\n"
       "  prog CH HH:MM-HH:MM [...]  program közvetlen mentése (CH 0..6)\n"
       "  mode CH auto|off|man\n"
@@ -98,6 +100,13 @@ void exec(char *cmd) {
   } else if (!strcmp(cmd, "clock")) {
     g_state.clock_valid = n != 0;
     pk_touch();
+  } else if (!strcmp(cmd, "out") && arg) controller_use_modbus(!strcmp(arg, "modbus"));
+  else if (!strcmp(cmd, "relay")) {
+    const RelayStatus r = relay_status();
+    Serial.printf("relay: kimenet=%s link=%d volt_mar=%d allapot=%X ok=%lu hiba=%lu utolso_hiba=%s modul_ok=%d\n",
+                  controller_use_modbus() ? "modbus" : "sim", r.link_ok, r.ever_ok, r.actual, (unsigned long)r.ok_count,
+                  (unsigned long)r.err_count, r.last_err[0] ? r.last_err : "-", g_state.module_ok);
+    if (controller_use_modbus()) Serial.printf("relay: verzio=%d (x100)\n", relay_read_version());
   } else if (!strcmp(cmd, "module")) controller_sim_module(n != 0);
   else if (!strcmp(cmd, "flow")) controller_sim_flow_fault(n == 0);
   else if (!strcmp(cmd, "mode") && arg) {

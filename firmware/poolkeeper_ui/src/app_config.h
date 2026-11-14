@@ -3,9 +3,9 @@
 
 #include <stdint.h>
 
-#define PK_FW_VERSION "0.4.2"
+#define PK_FW_VERSION "0.5.0"
 // Egész szám, minden kiadásnál növelni kell: a távoli frissítés ezzel hasonlít (manifest "build").
-#define PK_FW_BUILD 7
+#define PK_FW_BUILD 8
 
 // Időzóna (POSIX TZ): Europe/Vienna
 #define PK_TZ "CET-1CEST,M3.5.0,M10.5.0/3"
@@ -26,6 +26,19 @@ static constexpr uint32_t PK_IDLE_EDITOR_MS = 180000;
 
 // Kimeneti modul visszaigazolás időkorlátja
 static constexpr uint32_t PK_CMD_TIMEOUT_MS = 5000;
+
+// ---- Kimeneti modul: Waveshare Modbus RTU Relay 4CH (RS485) ----
+// Bekötés: panel J34 UART (TX GPIO43, RX GPIO44, 5 V, GND) → auto-irányváltós TTL–RS485 átalakító → modul A/B.
+// true = valódi relémodul; false = szimuláció (fejlesztéshez). Futás közben: konzol "out modbus|sim".
+static constexpr bool PK_OUT_MODBUS = true;
+static constexpr int PK_RS485_TX = 43, PK_RS485_RX = 44;
+static constexpr uint32_t PK_RS485_BAUD = 9600;
+static constexpr uint8_t PK_RELAY_ADDR = 1;  // Modbus eszközcím
+// Csatorna → relé (0..3 = RELAY 1..4, -1 = nincs kimenet; az ilyen eszköz a menüben rejtett)
+// Sorrend: Szivattyú, Világítás, Nyakzuhany, Masszázs, Ellenáramoltató, Levegőmasszázs, Sóbontó
+static constexpr int8_t PK_RELAY_OF[7] = {0, 2, -1, 3, -1, -1, 1};
+// Keringés igazolása áramlásérzékelő nélkül: a szivattyúrelé visszaolvasva legalább ennyi ideje BE
+static constexpr uint32_t PK_FLOW_CONFIRM_MS = 30000;
 
 // Napi időprogram: legfeljebb ennyi BE–KI időszak csatornánként (UI-terv 05)
 static constexpr int PK_MAX_PERIODS = 5;
