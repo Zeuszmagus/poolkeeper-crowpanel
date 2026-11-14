@@ -1,0 +1,28 @@
+profile full
+wait 1200
+link 0
+page 3
+c
+r 10
+c
+wait 400
+shot build/shots/f9_sched_save_nolink.png
+d
+link 1
+page 3
+c
+r 10
+c
+wait 400
+shot build/shots/f10_sched_saved.png
+d
+fault 1
+link 0
+wait 31000
+page 0
+shot build/shots/f11_pool_stale_dot.png
+page 1
+shot build/shots/f12_water_fault.png
+link 1
+fault 0
+profile basic

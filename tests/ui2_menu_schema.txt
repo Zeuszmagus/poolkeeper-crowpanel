@@ -1,0 +1,38 @@
+time 2026-11-13 10:15
+prog 0 08:00-12:00
+mode 0 auto
+mode 1 man
+mode 6 man
+flow 0
+wait 1500
+c
+wait 1100
+shot build/shots2/e0_pump.png
+r
+wait 600
+shot build/shots2/e1_light.png
+r
+wait 600
+shot build/shots2/e2_neck.png
+r 3
+wait 600
+shot build/shots2/e3_air.png
+r
+wait 600
+shot build/shots2/e4_salt.png
+r
+wait 600
+shot build/shots2/e5_stats.png
+r
+wait 600
+shot build/shots2/e6_about.png
+r
+wait 600
+shot build/shots2/e7_clock.png
+L
+wait 1200
+prog 0
+mode 0 off
+mode 1 off
+mode 6 off
+flow 1

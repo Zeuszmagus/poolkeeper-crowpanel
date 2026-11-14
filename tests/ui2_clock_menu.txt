@@ -1,0 +1,36 @@
+# Óra érvénytelen idővel -> menü -> időbeállítás -> analóg és digitális óra
+clock 0
+wait 600
+shot build/shots2/01_clock_invalid.png
+c
+wait 400
+shot build/shots2/02_menu_clock.png
+c
+wait 400
+shot build/shots2/03_time_hour.png
+r 2
+wait 200
+shot build/shots2/04_time_hour_14.png
+c
+wait 300
+r 37
+wait 300
+shot build/shots2/05_time_minute.png
+c
+wait 600
+shot build/shots2/06_menu_after_time.png
+d
+wait 1200
+shot build/shots2/07_clock_analog.png
+c
+wait 300
+L
+wait 300
+d
+wait 1200
+shot build/shots2/08_clock_digital.png
+c
+wait 300
+L
+d
+status

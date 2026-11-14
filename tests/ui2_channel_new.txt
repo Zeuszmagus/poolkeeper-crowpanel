@@ -1,0 +1,33 @@
+time 2026-11-13 10:15
+prog 0 08:00-12:00 18:00-20:00
+wait 300
+c
+wait 1100
+c
+wait 1100
+shot build/shots2/f0_pump_off.png
+l
+wait 900
+shot build/shots2/f1_pump_auto.png
+r 2
+wait 900
+shot build/shots2/f2_pump_manual.png
+tap 180 318
+wait 1300
+status
+r
+wait 600
+c
+wait 1100
+r
+flow 0
+wait 1500
+shot build/shots2/f3_salt_waiting.png
+L
+wait 1200
+L
+wait 1200
+prog 0
+mode 0 off
+mode 6 off
+flow 1

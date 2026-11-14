@@ -1,0 +1,8 @@
+c
+wait 1100
+shot build/shots2/b0_menu_first.png
+r 9
+wait 700
+shot build/shots2/b1_menu_last.png
+L
+wait 1200

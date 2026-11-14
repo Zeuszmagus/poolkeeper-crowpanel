@@ -1,0 +1,71 @@
+# PoolKeeper CrowPanel — firmware fordítás és távoli frissítés (OTA) kiadás.
+#
+# Indítás: egy "v*" címke feltöltése (pl. git tag v0.4.0 && git push --tags), vagy kézzel (workflow_dispatch).
+# Eredmény: GitHub Release a poolkeeper_ui-<build>.bin és manifest.json fájlokkal.
+# A panelek manifest címe (egyszer kell beállítani a panel webes felületén / soros konzolon):
+#   https://github.com/<OWNER>/<REPO>/releases/latest/download/manifest.json
+# Fontos: kiadás előtt a firmware/poolkeeper_ui/src/app_config.h-ban a PK_FW_BUILD értékét növelni kell.
+
+name: firmware-release
+
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+    inputs:
+      devices:
+        description: "Célzott panelek vesszővel (pl. PK-71D040), vagy * = mind"
+        default: "*"
+
+permissions:
+  contents: write
+
+env:
+  ARDUINO_CLI_VERSION: "1.6.0"
+  ESP32_CORE: "esp32:esp32@3.3.8"
+  FQBN: "esp32:esp32:esp32s3:CDCOnBoot=cdc,USBMode=hwcdc,FlashMode=dio,FlashSize=16M,PSRAM=opi,PartitionScheme=custom,CPUFreq=240,LoopCore=1,EventsCore=1,DebugLevel=none"
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: arduino-cli telepítése
+        run: |
+          curl -fsSL https://downloads.arduino.cc/arduino-cli/arduino-cli_${ARDUINO_CLI_VERSION}_Linux_64bit.tar.gz | tar xz -C /usr/local/bin arduino-cli
+          arduino-cli config init --additional-urls https://espressif.github.io/arduino-esp32/package_esp32_index.json
+          arduino-cli config set library.enable_unsafe_install true
+          arduino-cli core update-index
+          arduino-cli core install "$ESP32_CORE"
+
+      - name: Könyvtárak (rögzített verziók) + Elecrow javítások
+        run: |
+          arduino-cli lib install "LovyanGFX@1.2.7" "lvgl@9.1.0" "Adafruit NeoPixel@1.15.1" "cst816t@1.5.1"
+          LIBDIR="$HOME/Arduino/libraries"
+          # A gyári Elecrow csomag két LovyanGFX fájlja eltér a hivatalos 1.2.7-től (ST77961 panel)
+          cp -r firmware/patches/LovyanGFX/src/* "$LIBDIR/LovyanGFX/src/"
+          # A hivatalos lvgl 9.1.0 ARM-assembly fájljai ESP32-n nem fordulnak (gyári javítás)
+          cp -r firmware/patches/lvgl/src/* "$LIBDIR/lvgl/src/"
+          cp firmware/libraries/lv_conf.h "$LIBDIR/lv_conf.h"
+
+      - name: Fordítás
+        run: |
+          arduino-cli compile --fqbn "$FQBN" --build-path build/poolkeeper_ui firmware/poolkeeper_ui
+
+      - name: Manifest
+        run: |
+          TAG="${GITHUB_REF_NAME}"
+          if [ "${GITHUB_REF_TYPE}" != "tag" ]; then TAG="build-${GITHUB_RUN_NUMBER}"; fi
+          echo "TAG=$TAG" >> "$GITHUB_ENV"
+          python3 scripts/make_manifest.py \
+            --bin build/poolkeeper_ui/poolkeeper_ui.ino.bin \
+            --base-url "https://github.com/${GITHUB_REPOSITORY}/releases/download/${TAG}" \
+            --devices "${{ github.event.inputs.devices || '*' }}" \
+            --out ota
+
+      - name: Kiadás (GitHub Release)
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "$TAG" ota/*.bin ota/manifest.json --title "PoolKeeper firmware $TAG" --notes "Automatikus build" --latest

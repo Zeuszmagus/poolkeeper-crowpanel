@@ -1,0 +1,16 @@
+c
+wait 1100
+shot build/shots2/90_menu_face_btn.png
+tap 180 262
+wait 800
+shot build/shots2/91_menu_face_toggled.png
+status
+tap 180 262
+wait 800
+L
+wait 1200
+r
+wait 600
+shot build/shots2/92_clock_rotated.png
+l
+wait 600

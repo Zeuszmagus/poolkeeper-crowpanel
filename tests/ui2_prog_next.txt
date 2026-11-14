@@ -1,0 +1,35 @@
+# Első időszak felvétele, majd tovább a következőre
+nvsreset
+wait 4000
+time 2026-11-13 10:00
+wait 300
+c
+wait 1100
+r
+wait 400
+c
+wait 1100
+l
+wait 400
+c
+wait 1100
+shot build/shots2/a0_prog_empty.png
+c
+wait 300
+r
+c
+r
+c
+r
+c
+r
+c
+wait 400
+shot build/shots2/a1_after_first.png
+l
+wait 300
+shot build/shots2/a2_rotate_left.png
+c
+wait 400
+shot build/shots2/a3_second_field.png
+status

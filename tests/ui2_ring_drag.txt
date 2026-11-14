@@ -1,0 +1,15 @@
+c
+wait 1100
+c
+wait 1100
+swipe 180 25 335 180
+wait 600
+shot build/shots2/80_ring_hour.png
+c
+wait 400
+swipe 335 180 180 335
+wait 600
+shot build/shots2/81_ring_minute.png
+L
+wait 1200
+status

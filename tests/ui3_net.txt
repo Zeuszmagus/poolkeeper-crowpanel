@@ -1,0 +1,22 @@
+c
+wait 1100
+c
+wait 1100
+r 20
+wait 600
+l
+wait 600
+c
+wait 1100
+L
+wait 1200
+r 7
+wait 500
+shot build/shots2/j0_installer_net.png
+c
+wait 1200
+shot build/shots2/j1_netview.png
+c
+wait 2500
+shot build/shots2/j2_portal.png
+net

@@ -1,0 +1,28 @@
+time 2026-11-14 10:15
+prog 0 08:00-12:00 16:00-18:00
+mode 0 auto
+mode 1 man
+mode 6 man
+flow 0
+wait 1500
+c
+wait 1100
+shot build/shots2/g0_home_busy.png
+flow 1
+wait 2500
+shot build/shots2/g1_home_salt_ok.png
+c
+wait 1100
+status
+L
+wait 1100
+status
+mode 0 off
+mode 1 off
+mode 6 off
+prog 0
+wait 1200
+shot build/shots2/g2_home_idle.png
+L
+wait 1100
+status

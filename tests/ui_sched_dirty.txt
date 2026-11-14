@@ -1,0 +1,23 @@
+profile basic
+wait 1000
+page 2
+c
+r 9
+c
+r 2
+c
+wait 300
+shot build/shots/b12_sched_dirty.png
+d
+wait 300
+shot build/shots/b13_sched_reverted.png
+c
+r 9
+c
+r 2
+c
+r
+c
+wait 400
+shot build/shots/b14_sched_saved.png
+status

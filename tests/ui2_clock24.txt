@@ -1,0 +1,21 @@
+prog 0 06:00-09:00 13:00-15:30 19:00-21:00
+prog 1 18:00-23:30
+prog 3 10:00-11:00 16:00-17:00
+prog 4 08:30-10:30 14:00-14:45
+prog 5 20:00-22:00
+mode 0 auto
+mode 1 auto
+mode 4 auto
+time 2026-11-13 10:15
+wait 1500
+shot build/shots2/d0_am.png
+time 2026-11-13 19:40
+wait 1500
+shot build/shots2/d1_pm.png
+time 2026-11-13 12:00
+shot build/shots2/d2_noon.png
+wait 2200
+shot build/shots2/d3_noon_plus.png
+clock 0
+wait 1200
+shot build/shots2/d4_invalid.png

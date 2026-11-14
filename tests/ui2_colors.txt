@@ -1,0 +1,54 @@
+prog 0 08:00-10:00 13:00-15:00 19:00-20:30
+prog 1 18:00-23:00
+prog 3 10:00-11:00 16:00-17:00
+prog 4 12:00-13:00
+prog 5 09:00-09:30 21:00-22:00
+mode 0 auto
+mode 1 auto
+mode 4 man
+wait 500
+c
+wait 1100
+r 4
+wait 600
+shot build/shots2/c0_menu_counter.png
+r
+wait 600
+shot build/shots2/c1_menu_air.png
+l 5
+wait 600
+c
+wait 1100
+shot build/shots2/c2_pump.png
+c
+wait 1100
+r
+wait 400
+shot build/shots2/c3_pump_prog.png
+L
+wait 1200
+L
+wait 1200
+r
+c
+wait 1100
+shot build/shots2/c4_light.png
+L
+wait 1200
+r 2
+c
+wait 1100
+shot build/shots2/c5_massage.png
+L
+wait 1200
+r 2
+c
+wait 1100
+shot build/shots2/c6_air.png
+L
+wait 1200
+L
+wait 1200
+mode 0 off
+mode 1 off
+mode 4 off

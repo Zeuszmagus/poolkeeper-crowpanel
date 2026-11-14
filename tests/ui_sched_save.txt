@@ -1,0 +1,15 @@
+# Időzítés mentése gyűrűvel: belépés -> Vége henger -> +2 lépés -> Mentés
+profile basic
+wait 1000
+page 2
+c
+r 9
+c
+r 2
+c
+r
+c
+wait 400
+shot build/shots/b15_sched_saved.png
+d
+status

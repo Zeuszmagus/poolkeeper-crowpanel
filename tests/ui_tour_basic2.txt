@@ -1,0 +1,39 @@
+# Basic: Időzítés és Rendszer oldal, érvénytelen óra, modulkiesés
+profile basic
+wait 800
+page 2
+wait 300
+c
+wait 400
+shot build/shots/b6_sched_interact.png
+r 8
+wait 300
+c
+wait 300
+r 2
+wait 400
+shot build/shots/b7_sched_roller_edit.png
+c
+wait 200
+d
+wait 300
+page 3
+wait 300
+shot build/shots/b8_system.png
+clock 0
+link 0
+wait 400
+page 0
+wait 300
+shot build/shots/b9_pool_badclock.png
+page 1
+c
+c
+wait 300
+shot build/shots/b10_equip_linklost_pending.png
+wait 8500
+shot build/shots/b11_equip_cmd_expired.png
+clock 1
+link 1
+d
+status

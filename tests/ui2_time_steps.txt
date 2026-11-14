@@ -1,0 +1,12 @@
+c
+wait 1100
+c
+wait 1100
+shot build/shots2/70_time_hour.png
+c
+wait 500
+shot build/shots2/71_time_minute.png
+status
+L
+wait 1100
+status

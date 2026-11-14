@@ -1,0 +1,22 @@
+# Időzítés-logika ellenőrzés a készüléken (Basic profil). Várt eredmények a sorok mellett.
+profile basic
+wait 800
+# 1) Éjfélen átnyúló ablak csak csütörtökre (bit3): péntek 00:20-kor még BE, következő KI 00:30
+time 2026-11-13 00:20
+sched 1 08 21:00 00:30
+wait 1500
+status
+# 2) Ugyanez péntek 00:40: KI, következő BE csütörtök 21:00
+time 2026-11-13 00:40
+wait 1500
+status
+# 3) Tavaszi óraátállítás (2026-03-29 02:00 CET -> 03:00 CEST): a nem létező 02:30-as kezdés 03:00 CEST-kor kapcsol
+time 2026-03-29 01:50
+sched 0 7F 02:30 06:00
+wait 1500
+status
+# 4) Őszi óraátállítás (2026-10-25 03:00 CEST -> 02:00 CET): 01:00-02:30 ablak vége
+time 2026-10-25 01:10
+sched 0 7F 01:00 02:30
+wait 1500
+status

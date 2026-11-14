@@ -1,0 +1,23 @@
+nvsreset
+wait 4000
+time 2026-11-12 12:20
+mode 0 man
+wait 65000
+c
+l
+wait 400
+shot build/shots2/50_menu_stats.png
+c
+wait 400
+shot build/shots2/51_stats.png
+d
+d
+clock 0
+wait 1200
+shot build/shots2/52_clock_invalid.png
+c
+c
+wait 400
+shot build/shots2/53_time_edit.png
+d
+d

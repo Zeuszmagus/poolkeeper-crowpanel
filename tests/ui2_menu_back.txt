@@ -1,0 +1,15 @@
+c
+wait 1100
+c
+wait 1100
+shot build/shots2/i0_menu_pump.png
+l
+wait 600
+r 9
+wait 600
+shot build/shots2/i1_menu_clock.png
+tap 180 320
+wait 1300
+status
+L
+wait 1200

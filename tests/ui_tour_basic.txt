@@ -1,0 +1,36 @@
+# Basic profil bejárás — gyűrű és nyomás szimulálva soros parancsokkal
+profile basic
+wait 600
+page 0
+shot build/shots/b1_pool.png
+r
+wait 700
+shot build/shots/b2_equip_nav.png
+c
+wait 300
+shot build/shots/b3_equip_interact.png
+c
+wait 300
+shot build/shots/b4_equip_pending.png
+wait 1500
+shot build/shots/b5_equip_confirmed.png
+d
+r
+wait 700
+c
+wait 400
+shot build/shots/b6_sched_interact.png
+r 3
+wait 300
+c
+wait 300
+r 2
+wait 400
+shot build/shots/b7_sched_roller_edit.png
+c
+wait 200
+d
+r
+wait 700
+shot build/shots/b8_system.png
+status

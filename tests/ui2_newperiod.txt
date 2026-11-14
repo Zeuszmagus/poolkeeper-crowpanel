@@ -1,0 +1,41 @@
+time 2026-11-14 10:15
+mode 0 auto
+wait 300
+c
+wait 1100
+c
+wait 1100
+c
+wait 1100
+c
+wait 400
+shot build/shots2/h0_first_on_hour.png
+c
+wait 300
+shot build/shots2/h1_first_on_min.png
+c
+wait 300
+shot build/shots2/h2_first_off_hour.png
+r 7
+c
+wait 300
+shot build/shots2/h3_first_off_min.png
+r 30
+c
+wait 400
+l
+c
+wait 400
+shot build/shots2/h4_second_on_hour.png
+c
+wait 300
+shot build/shots2/h5_second_on_min.png
+L
+wait 1200
+L
+wait 1200
+L
+wait 1200
+L
+wait 1200
+mode 0 off

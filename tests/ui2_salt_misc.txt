@@ -1,0 +1,79 @@
+nvsreset
+wait 4000
+time 2026-11-12 12:20
+prog 0 10:00-11:00 12:00-14:00 16:00-17:00
+mode 0 auto
+wait 2500
+c
+r 7
+wait 400
+shot build/shots2/30_menu_salt.png
+c
+l
+wait 600
+shot build/shots2/31_salt_auto.png
+c
+wait 400
+shot build/shots2/32_salt_overview.png
+r
+c
+r 2
+wait 300
+shot build/shots2/33_salt_choice.png
+c
+c
+r 15
+c
+l
+c
+c
+wait 400
+shot build/shots2/34_salt_overview_save.png
+c
+wait 1200
+shot build/shots2/35_salt_running.png
+flow 0
+wait 1500
+shot build/shots2/36_salt_waiting_flow.png
+flow 1
+prog 0 10:00-11:00 12:30-14:00 16:00-17:00
+wait 1500
+shot build/shots2/37_salt_check.png
+d
+wait 400
+r 2
+wait 400
+shot build/shots2/38_menu_stats.png
+c
+wait 400
+shot build/shots2/39_stats.png
+d
+r
+c
+wait 400
+shot build/shots2/40_about.png
+L
+wait 400
+shot build/shots2/41_installer.png
+c
+c
+wait 300
+shot build/shots2/42_installer_hidden.png
+d
+r
+c
+r
+c
+r 2
+wait 300
+shot build/shots2/43_installer_move.png
+c
+r 4
+c
+wait 600
+c
+wait 400
+r 3
+wait 400
+shot build/shots2/44_menu_after_layout.png
+status

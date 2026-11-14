@@ -1,0 +1,35 @@
+prog 0 08:00-10:45
+mode 0 auto
+wait 300
+c
+wait 1100
+c
+wait 1100
+c
+wait 1100
+c
+wait 1100
+r
+wait 300
+c
+wait 400
+shot build/shots2/h4_second_on_hour.png
+c
+wait 300
+shot build/shots2/h5_second_on_min.png
+c
+wait 300
+shot build/shots2/h6_second_off_hour.png
+L
+wait 1200
+L
+wait 1200
+L
+wait 1200
+L
+wait 1200
+L
+wait 1200
+prog 0
+mode 0 off
+status

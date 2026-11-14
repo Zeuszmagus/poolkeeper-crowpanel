@@ -1,0 +1,15 @@
+build/
+tools/arduino-cli/
+tools/arduino-data/
+tools/arduino-user/
+tools/venv/
+tools/fontconv/node_modules/
+# A teljes flash-mentés tartalmazhat NVS-ben tárolt Wi-Fi adatot — ne kerüljön repóba
+backup/
+vendor/
+# A könyvtárak a hivatalos kezelőből települnek (lásd .github/workflows/firmware-release.yml);
+# a repóban csak az lv_conf.h és a gyári LovyanGFX-javítások (firmware/patches) vannak.
+firmware/libraries/*
+!firmware/libraries/lv_conf.h
+# Generált OTA kiadás (GitHub Release-be kerül)
+ota/

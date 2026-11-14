@@ -1,0 +1,10 @@
+c
+wait 1100
+c
+wait 1100
+shot build/shots2/c7_pump2.png
+L
+wait 1200
+L
+wait 1200
+mode 0 off

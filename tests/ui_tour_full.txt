@@ -1,0 +1,46 @@
+# Full profil bejárás
+profile full
+wait 1500
+page 0
+shot build/shots/f1_pool.png
+page 1
+wait 200
+shot build/shots/f2_water.png
+page 2
+c
+# Fűtés BE kérés kikapcsolt szivattyú mellett -> retesz elutasítja
+r
+c
+wait 1300
+shot build/shots/f3_heater_rejected.png
+# Szivattyú BE
+l
+c
+wait 1600
+shot build/shots/f4_pump_on_feedback.png
+d
+fault 1
+link 0
+wait 33000
+page 0
+wait 300
+shot build/shots/f5_pool_stale.png
+page 1
+wait 300
+shot build/shots/f6_water_stale_fault.png
+page 3
+c
+c
+wait 300
+r 12
+c
+wait 600
+shot build/shots/f7_sched_save_nolink.png
+d
+link 1
+fault 0
+wait 800
+page 1
+wait 300
+shot build/shots/f8_water_restored.png
+status

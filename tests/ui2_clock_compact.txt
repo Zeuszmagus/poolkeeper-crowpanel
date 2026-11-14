@@ -1,0 +1,15 @@
+prog 0 06:00-09:00 19:00-21:00
+prog 4 08:30-10:30
+prog 1 18:00-23:30
+mode 0 auto
+mode 4 auto
+mode 1 auto
+time 2026-11-13 10:15
+wait 1500
+shot build/shots2/d5_am_compact.png
+prog 0
+prog 4
+prog 1
+mode 0 off
+mode 4 off
+mode 1 off

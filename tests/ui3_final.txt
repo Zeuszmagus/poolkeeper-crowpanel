@@ -1,0 +1,26 @@
+c
+wait 1100
+shot build/shots2/k0_home.png
+c
+wait 1100
+r 20
+wait 600
+l
+wait 600
+c
+wait 1100
+shot build/shots2/k1_about.png
+L
+wait 1200
+r 7
+c
+wait 1200
+shot build/shots2/k2_netview.png
+L
+wait 1200
+L
+wait 1200
+L
+wait 1200
+L
+wait 1200

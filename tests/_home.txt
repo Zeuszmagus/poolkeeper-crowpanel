@@ -1,0 +1,8 @@
+L
+wait 1200
+L
+wait 1200
+L
+wait 1200
+mode 0 off
+status

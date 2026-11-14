@@ -1,0 +1,12 @@
+locale: en
+board_manager:
+  additional_urls:
+    - https://espressif.github.io/arduino-esp32/package_esp32_index.json
+directories:
+  data: D:/rotaryHDMI/tools/arduino-data
+  downloads: D:/rotaryHDMI/tools/arduino-data/staging
+  user: D:/rotaryHDMI/tools/arduino-user
+library:
+  enable_unsafe_install: true
+build_cache:
+  path: D:/rotaryHDMI/build/cache

@@ -1,0 +1,19 @@
+# Időbeállítás megerősítése után gyors második nyomás: nem nyithatja meg újra
+time 2026-11-13 00:30
+wait 300
+c
+wait 1100
+c
+wait 1100
+r 2
+c
+wait 400
+c
+c
+wait 1200
+status
+# 1 s után a szándékos nyomás már működik
+c
+wait 600
+status
+d

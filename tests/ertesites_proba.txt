@@ -1,0 +1,3 @@
+Telefonos értesítés próba
+Módosítva: 2026-11-13
+Ha ezt a fájlt a telefonodon látod, az értesítés és a fájlküldés működik.

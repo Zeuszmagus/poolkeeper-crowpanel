@@ -1,0 +1,43 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "PoolKeeper: Build",
+      "type": "shell",
+      "command": "powershell -ExecutionPolicy Bypass -File scripts/build.ps1",
+      "group": { "kind": "build", "isDefault": true },
+      "problemMatcher": "$gcc"
+    },
+    {
+      "label": "PoolKeeper: Build + Upload",
+      "type": "shell",
+      "command": "powershell -ExecutionPolicy Bypass -File scripts/upload.ps1",
+      "problemMatcher": "$gcc"
+    },
+    {
+      "label": "PoolKeeper: Upload (no build)",
+      "type": "shell",
+      "command": "powershell -ExecutionPolicy Bypass -File scripts/upload.ps1 -NoBuild",
+      "problemMatcher": []
+    },
+    {
+      "label": "PoolKeeper: Serial monitor",
+      "type": "shell",
+      "command": "powershell -ExecutionPolicy Bypass -File scripts/monitor.ps1",
+      "isBackground": true,
+      "problemMatcher": []
+    },
+    {
+      "label": "PoolKeeper: Screenshot",
+      "type": "shell",
+      "command": "tools/venv/Scripts/python.exe scripts/pk_serial.py shot build/shots/screen.png",
+      "problemMatcher": []
+    },
+    {
+      "label": "PoolKeeper: Regenerate fonts",
+      "type": "shell",
+      "command": "bash scripts/gen_fonts.sh",
+      "problemMatcher": []
+    }
+  ]
+}

@@ -1,0 +1,52 @@
+nvsreset
+wait 4000
+time 2026-11-12 14:32
+wait 300
+c
+r
+wait 400
+shot build/shots2/10_menu_pump.png
+c
+wait 400
+shot build/shots2/11_pump_off.png
+l
+wait 600
+shot build/shots2/12_pump_auto.png
+c
+wait 400
+shot build/shots2/13_prog_empty.png
+c
+c
+wait 300
+shot build/shots2/14_field_missing_err.png
+r
+c
+r
+c
+r
+l 2
+c
+r
+c
+wait 300
+shot build/shots2/15_field_off_before_on.png
+r 3
+c
+r 15
+c
+wait 300
+shot build/shots2/16_overview_save.png
+l
+wait 200
+shot build/shots2/17_overview_period.png
+r
+c
+wait 600
+shot build/shots2/18_pump_auto_saved.png
+r 2
+wait 900
+shot build/shots2/19_pump_manual.png
+d
+wait 500
+shot build/shots2/20_menu_pump_manual.png
+status
