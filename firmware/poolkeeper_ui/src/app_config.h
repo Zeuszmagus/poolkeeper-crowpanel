@@ -3,9 +3,9 @@
 
 #include <stdint.h>
 
-#define PK_FW_VERSION "0.4.0"
+#define PK_FW_VERSION "0.4.1"
 // Egész szám, minden kiadásnál növelni kell: a távoli frissítés ezzel hasonlít (manifest "build").
-#define PK_FW_BUILD 5
+#define PK_FW_BUILD 6
 
 // Időzóna (POSIX TZ): Europe/Vienna
 #define PK_TZ "CET-1CEST,M3.5.0,M10.5.0/3"

@@ -82,7 +82,9 @@ bool targeted(const String &j, const char *device_id) {
 }
 
 void begin_client(HTTPClient &http, NetworkClient *&plain, NetworkClientSecure *&tls, const String &url) {
-  http.setFollowRedirects(HTTPC_STRICT_FOLLOW_REDIRECTS);
+  // Az átirányítást magunk követjük (open_url): az ESP32 core 3.3.8 stop_ssl_socket() lenullázza a TLS-környezetet,
+  // és vele a tanúsítványcsomag csatolását, így a beépített követésnél a második kapcsolat "No CA Chain" hibával bukik.
+  http.setFollowRedirects(HTTPC_DISABLE_FOLLOW_REDIRECTS);
   http.setTimeout(15000);
   if (url.startsWith("https://")) {
     tls = new NetworkClientSecure();
@@ -91,6 +93,37 @@ void begin_client(HTTPClient &http, NetworkClient *&plain, NetworkClientSecure *
   } else {
     plain = new NetworkClient();
     http.begin(*plain, url);
+  }
+}
+
+void close_client(HTTPClient &http, NetworkClient *&plain, NetworkClientSecure *&tls) {
+  http.end();
+  delete plain;
+  delete tls;
+  plain = nullptr;
+  tls = nullptr;
+}
+
+// GET, átirányítások követésével (legfeljebb 5), minden lépésben új TLS-klienssel.
+// Visszatérés után a kapcsolat nyitva marad (a hívó zárja close_client-tel).
+int open_url(HTTPClient &http, NetworkClient *&plain, NetworkClientSecure *&tls, String url) {
+  static const char *keep[] = {"Location"};
+  for (int hop = 0;; ++hop) {
+    begin_client(http, plain, tls, url);
+    http.collectHeaders(keep, 1);
+    const int code = http.GET();
+    const bool redirect = code == 301 || code == 302 || code == 303 || code == 307 || code == 308;
+    const String loc = redirect ? http.header("Location") : String();
+    if (!redirect || loc.isEmpty() || hop >= 5) {
+      if (code < 0 || code >= 400) {
+        char tls_err[96] = "";
+        if (tls) tls->lastError(tls_err, sizeof tls_err);
+        Serial.printf("[ota] HTTP %d (%s) %s\n", code, http.errorToString(code).c_str(), tls_err);
+      }
+      return code;
+    }
+    close_client(http, plain, tls);
+    url = loc;
   }
 }
 
@@ -112,13 +145,10 @@ void do_check() {
     HTTPClient http;
     NetworkClient *plain = nullptr;
     NetworkClientSecure *tls = nullptr;
-    begin_client(http, plain, tls, String(st.ota_url) + (strchr(st.ota_url, '?') ? "&" : "?") + "id=" + st.device_id +
-                                       "&build=" + PK_FW_BUILD);
-    const int code = http.GET();
+    const int code = open_url(http, plain, tls, String(st.ota_url) + (strchr(st.ota_url, '?') ? "&" : "?") + "id=" +
+                                                    st.device_id + "&build=" + PK_FW_BUILD);
     if (code == 200) manifest = http.getString();
-    http.end();
-    delete plain;
-    delete tls;
+    close_client(http, plain, tls);
     if (code != 200) {
       set_msg(OtaResult::Error, "Manifest hiba (HTTP %d)", code);
       return;
@@ -143,8 +173,7 @@ void do_check() {
   HTTPClient http;
   NetworkClient *plain = nullptr;
   NetworkClientSecure *tls = nullptr;
-  begin_client(http, plain, tls, url);
-  const int code = http.GET();
+  const int code = open_url(http, plain, tls, url);
   bool ok = false;
   if (code == 200) {
     const int total = http.getSize();
@@ -191,9 +220,7 @@ void do_check() {
   } else {
     set_msg(OtaResult::Error, "Letöltési hiba (HTTP %d)", code);
   }
-  http.end();
-  delete plain;
-  delete tls;
+  close_client(http, plain, tls);
   if (ok) {
     set_msg(OtaResult::Updated, "Telepítve: %s – újraindulás", version.c_str());
     st.reboot_pending = true;
