@@ -3,9 +3,9 @@
 
 #include <stdint.h>
 
-#define PK_FW_VERSION "0.3.0"
+#define PK_FW_VERSION "0.4.0"
 // Egész szám, minden kiadásnál növelni kell: a távoli frissítés ezzel hasonlít (manifest "build").
-#define PK_FW_BUILD 4
+#define PK_FW_BUILD 5
 
 // Időzóna (POSIX TZ): Europe/Vienna
 #define PK_TZ "CET-1CEST,M3.5.0,M10.5.0/3"
@@ -45,7 +45,7 @@ static constexpr uint32_t PK_PORTAL_TIMEOUT_MS = 15UL * 60UL * 1000UL;
 // ---- Távoli frissítés (OTA) ----
 // A panel óránként egyszer lekéri a manifestet (HTTPS). Az URL a webes beállításoknál vagy a
 // soros konzolon (otaurl) adható meg; üresen hagyva nincs automatikus frissítés-keresés.
-#define PK_OTA_DEFAULT_MANIFEST ""
+#define PK_OTA_DEFAULT_MANIFEST "https://github.com/Zeuszmagus/poolkeeper-crowpanel/releases/latest/download/manifest.json"
 static constexpr uint32_t PK_OTA_CHECK_PERIOD_MS = 60UL * 60UL * 1000UL;
 static constexpr uint32_t PK_OTA_FIRST_CHECK_MS = 3UL * 60UL * 1000UL;   // indulás után
 // Új firmware indulása után ennyi hibátlan futás kell az érvényesítéshez; előtte újraindulás = visszaállás

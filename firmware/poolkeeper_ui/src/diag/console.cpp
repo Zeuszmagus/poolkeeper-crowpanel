@@ -15,7 +15,7 @@
 #include "../ui/ui.h"
 
 namespace {
-char line[96];
+char line[256];
 size_t len = 0;
 
 void help() {
