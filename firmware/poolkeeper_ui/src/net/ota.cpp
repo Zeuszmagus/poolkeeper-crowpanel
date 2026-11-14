@@ -81,48 +81,54 @@ bool targeted(const String &j, const char *device_id) {
   return list.indexOf("\"*\"") >= 0 || list.indexOf(String("\"") + device_id + "\"") >= 0;
 }
 
-void begin_client(HTTPClient &http, NetworkClient *&plain, NetworkClientSecure *&tls, const String &url) {
-  // Az átirányítást magunk követjük (open_url): az ESP32 core 3.3.8 stop_ssl_socket() lenullázza a TLS-környezetet,
-  // és vele a tanúsítványcsomag csatolását, így a beépített követésnél a második kapcsolat "No CA Chain" hibával bukik.
-  http.setFollowRedirects(HTTPC_DISABLE_FOLLOW_REDIRECTS);
-  http.setTimeout(15000);
-  if (url.startsWith("https://")) {
-    tls = new NetworkClientSecure();
-    tls->setCACertBundle(x509_crt_bundle_start, x509_crt_bundle_end - x509_crt_bundle_start);
-    http.begin(*tls, url);
-  } else {
-    plain = new NetworkClient();
-    http.begin(*plain, url);
+// Egy HTTP(S) kapcsolat a hozzá tartozó kliensekkel. Minden átirányítási lépés teljesen új példányokat kap:
+// - az ESP32 core 3.3.8 stop_ssl_socket() lenullázza a TLS-környezetet a tanúsítványcsomag csatolásával együtt,
+//   ezért a beépített átirányítás-követésnél a második kapcsolat "No CA Chain" hibával bukik;
+// - egy újrahasznált HTTPClient a törölt előző kliensre mutathat (setTimeout → összeomlás).
+struct Conn {
+  HTTPClient *http = nullptr;
+  NetworkClient *plain = nullptr;
+  NetworkClientSecure *tls = nullptr;
+};
+
+void close_conn(Conn &c) {
+  if (c.http) {
+    c.http->end();
+    delete c.http;
   }
+  delete c.plain;
+  delete c.tls;
+  c = Conn{};
 }
 
-void close_client(HTTPClient &http, NetworkClient *&plain, NetworkClientSecure *&tls) {
-  http.end();
-  delete plain;
-  delete tls;
-  plain = nullptr;
-  tls = nullptr;
-}
-
-// GET, átirányítások követésével (legfeljebb 5), minden lépésben új TLS-klienssel.
-// Visszatérés után a kapcsolat nyitva marad (a hívó zárja close_client-tel).
-int open_url(HTTPClient &http, NetworkClient *&plain, NetworkClientSecure *&tls, String url) {
+// GET, legfeljebb 5 átirányítás követésével. Visszatérés után a kapcsolat nyitva marad (a hívó zárja close_conn-nal).
+int open_url(Conn &c, String url) {
   static const char *keep[] = {"Location"};
   for (int hop = 0;; ++hop) {
-    begin_client(http, plain, tls, url);
-    http.collectHeaders(keep, 1);
-    const int code = http.GET();
+    c.http = new HTTPClient();
+    c.http->setFollowRedirects(HTTPC_DISABLE_FOLLOW_REDIRECTS);
+    if (url.startsWith("https://")) {
+      c.tls = new NetworkClientSecure();
+      c.tls->setCACertBundle(x509_crt_bundle_start, x509_crt_bundle_end - x509_crt_bundle_start);
+      c.http->begin(*c.tls, url);
+    } else {
+      c.plain = new NetworkClient();
+      c.http->begin(*c.plain, url);
+    }
+    c.http->setTimeout(15000);
+    c.http->collectHeaders(keep, 1);
+    const int code = c.http->GET();
     const bool redirect = code == 301 || code == 302 || code == 303 || code == 307 || code == 308;
-    const String loc = redirect ? http.header("Location") : String();
+    const String loc = redirect ? c.http->header("Location") : String();
     if (!redirect || loc.isEmpty() || hop >= 5) {
       if (code < 0 || code >= 400) {
         char tls_err[96] = "";
-        if (tls) tls->lastError(tls_err, sizeof tls_err);
-        Serial.printf("[ota] HTTP %d (%s) %s\n", code, http.errorToString(code).c_str(), tls_err);
+        if (c.tls) c.tls->lastError(tls_err, sizeof tls_err);
+        Serial.printf("[ota] HTTP %d (%s) %s\n", code, c.http->errorToString(code).c_str(), tls_err);
       }
       return code;
     }
-    close_client(http, plain, tls);
+    close_conn(c);
     url = loc;
   }
 }
@@ -142,13 +148,11 @@ void do_check() {
 
   String manifest;
   {
-    HTTPClient http;
-    NetworkClient *plain = nullptr;
-    NetworkClientSecure *tls = nullptr;
-    const int code = open_url(http, plain, tls, String(st.ota_url) + (strchr(st.ota_url, '?') ? "&" : "?") + "id=" +
+    Conn c;
+    const int code = open_url(c, String(st.ota_url) + (strchr(st.ota_url, '?') ? "&" : "?") + "id=" +
                                                     st.device_id + "&build=" + PK_FW_BUILD);
-    if (code == 200) manifest = http.getString();
-    close_client(http, plain, tls);
+    if (code == 200) manifest = c.http->getString();
+    close_conn(c);
     if (code != 200) {
       set_msg(OtaResult::Error, "Manifest hiba (HTTP %d)", code);
       return;
@@ -170,22 +174,20 @@ void do_check() {
 
   // Letöltés + SHA-256 ellenőrzés + írás a másik programhelyre
   set_msg(OtaResult::Downloading, "Letöltés: %s (build %ld)", version.c_str(), build);
-  HTTPClient http;
-  NetworkClient *plain = nullptr;
-  NetworkClientSecure *tls = nullptr;
-  const int code = open_url(http, plain, tls, url);
+  Conn c;
+  const int code = open_url(c, url);
   bool ok = false;
   if (code == 200) {
-    const int total = http.getSize();
+    const int total = c.http->getSize();
     if (Update.begin(total > 0 ? total : UPDATE_SIZE_UNKNOWN, U_FLASH)) {
       mbedtls_sha256_context ctx;
       mbedtls_sha256_init(&ctx);
       mbedtls_sha256_starts(&ctx, 0);
-      NetworkClient *s = http.getStreamPtr();
+      NetworkClient *s = c.http->getStreamPtr();
       static uint8_t buf[4096];
       int done = 0;
       uint32_t last_data = millis();
-      while (http.connected() && (total <= 0 || done < total)) {
+      while (c.http->connected() && (total <= 0 || done < total)) {
         const int avail = s->available();
         if (avail <= 0) {
           if (millis() - last_data > 20000) break;
@@ -220,7 +222,7 @@ void do_check() {
   } else {
     set_msg(OtaResult::Error, "Letöltési hiba (HTTP %d)", code);
   }
-  close_client(http, plain, tls);
+  close_conn(c);
   if (ok) {
     set_msg(OtaResult::Updated, "Telepítve: %s – újraindulás", version.c_str());
     st.reboot_pending = true;
