@@ -23,7 +23,7 @@ Tervdokumentumok: [PoolKeeper_CrowPanel_projektterv.md](PoolKeeper_CrowPanel_pro
 
 Konzolparancsok (`help`): `r/l/c/d/L`, `tap`, `swipe`, `time`, `clock 0`, `module 0|1`, `flow 0|1`, `prog CH HH:MM-HH:MM …`, `mode CH auto|off|man`, `nvsreset`, `status`, `shot`, valamint hálózat: `wifi NÉV|JELSZÓ`, `wififorget`, `portal 1|0`, `otaurl <cím>`, `otacheck`, `net` (állapot, telepítői jelszó, futó programhely), `reboot`. Tesztszkriptek: `tests/ui2_*.txt`, képernyőképek: `build/shots2/`.
 
-## Hálózat, pontos idő, távoli frissítés (firmware 0.3.0, build 4)
+## Hálózat, pontos idő, távoli frissítés (firmware 0.4.2, build 7)
 
 ### Wi-Fi beállítása telefonról
 
@@ -88,8 +88,9 @@ A repó nyilvánossága: a release-fájlokat a panel bejelentkezés nélkül tö
 - ✅ Webes firmware-feltöltés, újraindulás az új programhelyről, érvényesítés 60 s után, és **automatikus visszaállás** szimulált összeomláskor.
 - ✅ Üzemmódok visszaállítása újraindulás után (AUTO marad, KÉZI → 0).
 - ✅ A felhős fordítás módszere (hivatalos könyvtárak + gyári javítások) helyben lefordult.
-- ⏳ **Nincs még élőben kipróbálva:** a csatlakozás az otthoni Wi-Fi-hez, az NTP-idő és az óránkénti HTTPS-frissítés. A teszthez nem volt internetre kötött Wi-Fi. A kód ugyanazokra a core-funkciókra épül, mint a kipróbált részek, de az első valódi Wi-Fi-beállításnál érdemes megnézni a Hálózat oldalt (Wi-Fi ✓, „Idő: internetről szinkronizálva”).
-- ⏳ A GitHub-repó és a GitHub Actions még nincs beállítva: ehhez a te GitHub-fiókod kell.
+- ✅ **Élőben kipróbálva (2026-11-14, firmware 0.4.2):** csatlakozás az otthoni Wi-Fi-hez, pontos idő NTP-ről, és frissítés az internetről. A GitHub Release-ből a panel letöltötte a build 7-et, ellenőrizte, telepítette (app0 → app1), újraindult, majd érvényesnek jelölte.
+- ✅ A GitHub-repó (`Zeuszmagus/poolkeeper-crowpanel`, nyilvános) és a GitHub Actions felhős fordítás működik, egy kiadás kb. 4 perc.
+- ⚠️ Az ESP32 core 3.3.8 a HTTPS-átirányítás után elveszíti a tanúsítványcsomagot. Ezért a firmware az átirányításokat maga követi, minden lépésben új klienssel ([net/ota.cpp](firmware/poolkeeper_ui/src/net/ota.cpp)). A v0.4.0 és a v0.4.1 kiadás emiatt nem tud frissíteni, ezeket ne telepítsd.
 
 ### Döntésre vár (Zsolti)
 
