@@ -130,6 +130,12 @@ A relé nélküli eszközök (Nyakzuhany, Ellenáramoltató, Levegőmasszázs) r
 - `relay`: kapcsolat, relé-állapot, hibaszámláló és a modul szoftververziója;
 - `out sim` / `out modbus`: váltás a szimuláció és a relémodul között.
 
+**Élő teszt (2026-11-17):**
+- A modul az első csatlakoztatásra válaszolt (V3.00).
+- Mind a négy relé kapcsolt, a visszaolvasott állapot egyezett, a kattogást és a LED-eket a helyszínen ellenőriztük.
+- A sóbontó szivattyú nélkül nem kapcsolt be, járó szivattyúval kb. 30 mp után igen.
+- A teszt alatt egyetlen kommunikációs hiba sem volt.
+
 **230 V:** a szivattyúmotort mágneskapcsolón keresztül, villanyszerelővel kell bekötni.
 
 ### Döntésre vár (Zsolti)
